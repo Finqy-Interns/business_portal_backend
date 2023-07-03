@@ -2,7 +2,7 @@
 const express = require('express')
 const app = express();
 // Only for development
-const cors = require('cors');
+// const cors = require('cors');
 require('dotenv').config()
 
 // Connection file
@@ -56,7 +56,7 @@ app.use('/api/admin/permission',adminPermissionController);
 app.use('/api/admin/user',adminUserController);
 
 // Start the server
-const port = 3000;
+const port = process.env.SERVERPORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 
