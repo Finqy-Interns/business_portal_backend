@@ -16,7 +16,7 @@ require('./db/index');
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 
 // Importing Login Route
 const loginRoutes = require('./api/login/login')
