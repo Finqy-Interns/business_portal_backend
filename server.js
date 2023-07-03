@@ -56,7 +56,7 @@ app.use('/api/admin/permission',adminPermissionController);
 app.use('/api/admin/user',adminUserController);
 
 // Start the server
-const port = process.env.SERVERPORT || 3000;
+const port = process.env.SERVERPORT || 8080;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 
