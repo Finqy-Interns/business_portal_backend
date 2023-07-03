@@ -1,0 +1,8 @@
+.env
+.yarn
+package-lock.json
+/node_modules
+*.xlsx
+JSON Format 1.json
+JSON Format 2.json
+*.html
