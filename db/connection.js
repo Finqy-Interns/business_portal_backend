@@ -11,10 +11,10 @@ const Sequelize = require('sequelize');
 
 // console.log(process.env)
 
-const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.USER, process.env.PASSWORD, {
-  host: process.env.HOST,
+const sequelize = new Sequelize("business_portal", "Finqy_Business_portal", "1Testmypolicy$", {
+  host: "businessportal.mysql.database.azure.com",
   dialect: 'mysql',
-  port:process.env.PORT,
+  port:"3306",
   logging: false,
 });
 
