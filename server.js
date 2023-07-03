@@ -21,6 +21,10 @@ app.use(express.json());
 // Importing Login Route
 const loginRoutes = require('./api/login/login')
 
+app.get('/',(req,res)=>{
+  return res.json({ message: 'Business Portal Backend API - ' + process.env.NODE_ENV });
+})
+
 // Login Route
 app.use('/api/login',loginRoutes);
 
