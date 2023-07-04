@@ -65,12 +65,12 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 
   // // Synchronize the models with the database
-  // sequelize.sync()
-  //   .then(() => {
-  //     console.log('Tables created successfully.');
-  //   })
-  //   .catch((error) => {
-  //     console.error('Error creating tables:', error);
-  //   });
+  sequelize.sync()
+    .then(() => {
+      console.log('Tables created successfully.');
+    })
+    .catch((error) => {
+      console.error('Error creating tables:', error);
+    });
 
 });
