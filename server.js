@@ -22,7 +22,7 @@ app.use(express.json());
 const loginRoutes = require('./api/login/login')
 
 app.get('/',(req,res)=>{
-  return res.json({ message: 'Business Portal Backend API - ' + process.env.NODE_ENV });
+  return res.json({ message: 'Business Portal Backend API - '});
 })
 
 // Login Route
@@ -64,13 +64,13 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 
-  // Synchronize the models with the database
-  sequelize.sync()
-    .then(() => {
-      console.log('Tables created successfully.');
-    })
-    .catch((error) => {
-      console.error('Error creating tables:', error);
-    });
+  // // Synchronize the models with the database
+  // sequelize.sync()
+  //   .then(() => {
+  //     console.log('Tables created successfully.');
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error creating tables:', error);
+  //   });
 
 });
