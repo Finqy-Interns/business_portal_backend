@@ -1,6 +1,7 @@
 // Importing modules
 const express = require('express')
 const app = express();
+const querystring = require('querystring');
 // Only for development
 // const cors = require('cors');
 require('dotenv').config()
@@ -21,27 +22,61 @@ app.use(express.json());
 // Importing Login Route
 const loginRoutes = require('./api/login/login')
 
-app.get('/',(req,res)=>{
-  return res.json({ message: 'Business Portal Backend API - '});
+app.get('/', (req, res) => {
+  return res.json({ message: 'Business Portal Backend API - ' });
+})
+
+app.get('/fetch-powerbi-token', async (req, res) => {
+  try {
+
+    const bodyParams = {
+      grant_type: 'password',
+      scope: 'openid',
+      resource: 'https://analysis.windows.net/powerbi/api',
+      client_id: '5731e3d9-3bfe-4b0a-838f-021d211c41a9', // Registered App ApplicationID
+      username: 'powerbi@finqy.onmicrosoft.com', // for example john.doe@yourdomain.com
+      password: '1Testmypolicy$', // Azure password for above user
+    };
+
+    const requestBody = querystring.stringify(bodyParams);
+
+    const response = await fetch('https://login.windows.net/common/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: requestBody,
+    });
+
+    const tokenResponse = await response.json();
+
+    return res.status(200).json({
+      accessToken: tokenResponse?.access_token
+    })
+
+    // console.log(tokenResponse); // Token response
+  } catch (error) {
+    console.error(error);
+  }
 })
 
 // Login Route
-app.use('/api/login',loginRoutes);
+app.use('/api/login', loginRoutes);
 
 // Importing Common (Business and Finance) Routes
 // const editCommonController = require('./api/commonController/editTargetAndActuals');
 const addCommonController = require('./api/commonController/addTargetAndActuals')
 const demoExcelCommonController = require('./api/commonController/demoExcelTargetAndActuals');
-const hierarchyCommonController  = require('./api/commonController/hierarchy');
+const hierarchyCommonController = require('./api/commonController/hierarchy');
 const uploadCommonController = require('./api/commonController/uploadExcel')
 const addhierarchy = require('./api/adminController/hierarchyController')
 // Common (Business and Finance) Routes
 // app.use('/api/user/addOrEdit',editCommonController);
-app.use('/api/user/add',addCommonController);
-app.use('/api/user/demoExcel',demoExcelCommonController);
-app.use('/api/user/hierarchy',hierarchyCommonController)
-app.use('/api/user/upload',uploadCommonController)
-app.use('/api/addhierarchy',addhierarchy);
+app.use('/api/user/add', addCommonController);
+app.use('/api/user/demoExcel', demoExcelCommonController);
+app.use('/api/user/hierarchy', hierarchyCommonController)
+app.use('/api/user/upload', uploadCommonController)
+app.use('/api/addhierarchy', addhierarchy);
 
 // // Importing Admin Routes
 const adminProductContoller = require('./api/adminController/productController');
@@ -52,12 +87,12 @@ const adminPermissionController = require('./api/adminController/permissionContr
 const adminUserController = require('./api/adminController/userController');
 
 // Admin Routes
-app.use('/api/admin/product',adminProductContoller);
-app.use('/api/admin/subProduct',adminSubProductController);
-app.use('/api/admin/channel',adminChannelController);
-app.use('/api/admin/role',adminRoleController);
-app.use('/api/admin/permission',adminPermissionController);
-app.use('/api/admin/user',adminUserController);
+app.use('/api/admin/product', adminProductContoller);
+app.use('/api/admin/subProduct', adminSubProductController);
+app.use('/api/admin/channel', adminChannelController);
+app.use('/api/admin/role', adminRoleController);
+app.use('/api/admin/permission', adminPermissionController);
+app.use('/api/admin/user', adminUserController);
 
 // Start the server
 const port = 8080;
