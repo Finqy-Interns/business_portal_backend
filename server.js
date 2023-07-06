@@ -3,7 +3,7 @@ const express = require('express')
 const app = express();
 const querystring = require('querystring');
 // Only for development
-const cors = require('cors');
+// const cors = require('cors');
 require('dotenv').config()
 
 // Connection file
@@ -17,7 +17,7 @@ require('./db/index');
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 
 // Importing Login Route
 const loginRoutes = require('./api/login/login')
