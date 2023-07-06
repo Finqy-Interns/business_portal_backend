@@ -33,8 +33,6 @@ This can be done directly by executing a single query using sequelize (Present i
 router.get('/', authenticatedPolicy(), permissionPolicy(['READ_HIERARCHY']), asyncHandler(async (req, res) => {
 
   try {
-    console.log("hellow");
-
     const { username } = req.user;
 
     const userProductRecords = await UserProduct.findAll({

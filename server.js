@@ -3,7 +3,7 @@ const express = require('express')
 const app = express();
 const querystring = require('querystring');
 // Only for development
-// const cors = require('cors');
+const cors = require('cors');
 require('dotenv').config()
 
 // Connection file
@@ -17,7 +17,7 @@ require('./db/index');
 
 // Middleware
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 
 // Importing Login Route
 const loginRoutes = require('./api/login/login')
@@ -29,32 +29,14 @@ app.get('/', (req, res) => {
 app.get('/fetch-powerbi-token', async (req, res) => {
   try {
 
-    const bodyParams = {
-      grant_type: 'password',
-      scope: 'openid',
-      resource: 'https://analysis.windows.net/powerbi/api',
-      client_id: '5731e3d9-3bfe-4b0a-838f-021d211c41a9', // Registered App ApplicationID
-      username: 'powerbi@finqy.onmicrosoft.com', // for example john.doe@yourdomain.com
-      password: '1Testmypolicy$', // Azure password for above user
-    };
-
-    const requestBody = querystring.stringify(bodyParams);
-
-    const response = await fetch('https://login.windows.net/common/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: requestBody,
-    });
+    const response = await fetch('https://finqy.ai/power.php');
 
     const tokenResponse = await response.json();
 
     return res.status(200).json({
       accessToken: tokenResponse?.access_token
     })
-
-    // console.log(tokenResponse); // Token response
+    
   } catch (error) {
     console.error(error);
   }
