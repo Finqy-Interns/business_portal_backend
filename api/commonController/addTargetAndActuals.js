@@ -48,11 +48,7 @@ router.put('/target/:product_id/', authenticatedPolicy(), permissionPolicy(['UPD
             })
         }
 
-        const treeStructure = await fetchData(product_id, () => { })
-
-        const productTreeStructure = treeStructure['product'];
-        const subproductTreeStructure = treeStructure['subproducts'];
-        const channelTreeStructure = treeStructure['channels']
+        
 
 
         const { status: newStatus, product, subProduct, channels, year } = data
@@ -63,6 +59,12 @@ router.put('/target/:product_id/', authenticatedPolicy(), permissionPolicy(['UPD
                 status: 400,
             })
         }
+
+        const treeStructure = await fetchData(product_id, year, () => { })
+
+        const productTreeStructure = treeStructure['product'];
+        const subproductTreeStructure = treeStructure['subproducts'];
+        const channelTreeStructure = treeStructure['channels']
 
         // console.log('year',year)
         const productBT = await productModel.findOne({
@@ -289,8 +291,6 @@ router.put('/actual/:product_id/:month', authenticatedPolicy(), permissionPolicy
             }
         })
 
-        console.log('pt',productActual)
-
         if (productActual) {
             return res.status(400).json({
                 msg: "action is add! please Edit the target dont add other for the same year",
@@ -349,7 +349,6 @@ router.put('/actual/:product_id/:month', authenticatedPolicy(), permissionPolicy
                     status: "publish"
                 }
             });
-            console.log('ac', productActual, month)
             if (productActual) {
                 return res.status(400).json({
                     msg: `publish status for version 1 and month ${month} already exists `,

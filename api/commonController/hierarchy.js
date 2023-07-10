@@ -30,10 +30,11 @@ This can be done directly by executing a single query using sequelize (Present i
 
 */
 
-router.get('/', authenticatedPolicy(), permissionPolicy(['READ_HIERARCHY']), asyncHandler(async (req, res) => {
+router.get('/:year', authenticatedPolicy(), permissionPolicy(['READ_HIERARCHY']), asyncHandler(async (req, res) => {
 
   try {
     const { username } = req.user;
+    const { year } = req.params
 
     const userProductRecords = await UserProduct.findAll({
       where: { user_id: username },
@@ -48,7 +49,8 @@ router.get('/', authenticatedPolicy(), permissionPolicy(['READ_HIERARCHY']), asy
       var products = []
 
       for (var i = 0; i < userProductIds.length; i++) {
-        const hierarchy = await fetchData(userProductIds[i], () => { })
+        const hierarchy = await fetchData(userProductIds[i], year, () => { })
+        // console.log('hierarchy',hierarchy)
         products.push(hierarchy)
       }
 
@@ -346,7 +348,7 @@ router.get('/target/:product_id/:year/:status', authenticatedPolicy(), permissio
     channelModel = ChannelBusinessTarget;
 
     // query to fetch the product's subproduct or channels 
-    var treeStructure = await fetchData(product_id, () => { })
+    var treeStructure = await fetchData(product_id, year, () => { })
 
     // console.log('treesr',JSON.stringify(treeStructure))
 
@@ -562,7 +564,7 @@ router.get('/actual/:product_id/:year/:status/:month', authenticatedPolicy(), pe
     channelModel = ChannelActuals;
 
     // query to fetch the product's subproduct or channels 
-    var treeStructure = await fetchData(product_id, () => { })
+    var treeStructure = await fetchData(product_id, year, () => { })
 
     if (!treeStructure) {
       return res.status(400).json({

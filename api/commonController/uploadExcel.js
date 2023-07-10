@@ -14,10 +14,10 @@ const authenticatedPolicy = require('../middlewares/Authentication')
 const permissionPolicy = require('../middlewares/Permission')
 //const app = express();
 
-router.put('/excel/:product_id', authenticatedPolicy(), permissionPolicy(['CREATE_BUSINESS_TARGET', 'CREATE_NUMBERS']), upload.single('file'), asyncHandler(async (req, res) => {
+router.put('/excel/:product_id/:year', authenticatedPolicy(), permissionPolicy(['CREATE_BUSINESS_TARGET', 'CREATE_NUMBERS']), upload.single('file'), asyncHandler(async (req, res) => {
     const workbook = new ExcelJS.Workbook();
     try {
-        const { product_id } = req.params;
+        const { product_id, year } = req.params;
         const buffer = req.file.buffer;
         await workbook.xlsx.load(buffer);
         // await workbook.xlsx.readFile('./api/commonController/Insurance.xlsx');
@@ -96,7 +96,7 @@ router.put('/excel/:product_id', authenticatedPolicy(), permissionPolicy(['CREAT
         }
 
         // const productId = productRecord.dataValues?.p_id;
-        var hierarchyObject = await fetchData(product_id, () => { });
+        var hierarchyObject = await fetchData(product_id, year, () => { });
         // console.log(productRecord)
         if (hierarchyObject) {
             var finalDataObject = {};

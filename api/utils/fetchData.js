@@ -4,7 +4,7 @@ const Channel = require('../../db/models/Channel');
 const Hierarchy = require('../../db/models/Hierarchy');
 const getCurrentFY = require('./getCurrentFY');
 
-async function fetchData(productId, callback) {
+async function fetchData(productId, year, callback) {
   try {
     const product = await Product.findByPk(productId);
     if (!product) {
@@ -22,7 +22,7 @@ async function fetchData(productId, callback) {
     var hierarchyRecords = await Hierarchy.findAll({
       where: {
         product_id: productId,
-        year: getCurrentFY(),
+        year: year,
       },
       include: [
         {
@@ -35,7 +35,6 @@ async function fetchData(productId, callback) {
         }
       ]
     });
-
     // removing unnecessary things
     hierarchyRecords = hierarchyRecords.map(hr => {
       delete hr.dataValues.createdAt;
@@ -46,7 +45,8 @@ async function fetchData(productId, callback) {
     })
 
     // If only product and channels exists
-    if (!hierarchyRecords[0].subProduct_id && hierarchyRecords[0].channel_id) {
+    if (!hierarchyRecords[0]?.subProduct_id && hierarchyRecords[0]
+      ?.channel_id) {
       var channels = []
       hierarchyRecords.map(hr => {
         channels.push(hr.Channel)
@@ -59,7 +59,7 @@ async function fetchData(productId, callback) {
     // for two cases
     // 1. If Product and Only subproduct exists
     // 2. If product, subproduct and channels exists
-    else if (hierarchyRecords[0].subProduct_id) {
+    else if (hierarchyRecords[0]?.subProduct_id) {
       var sp = [];
 
       hierarchyRecords.map(record => {

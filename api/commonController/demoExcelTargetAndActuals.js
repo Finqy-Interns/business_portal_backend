@@ -99,19 +99,17 @@ So we are checking this cases and based on this cases we are deciding which shee
 
 */
 
-router.get('/:product_id/:status', authenticatedPolicy(), (req, res) => {
-  const {product_id:productId, status} = req.params;
+router.get('/:product_id/:status/:year', authenticatedPolicy(), (req, res) => {
+  const {product_id:productId, status, year} = req.params;
   const { username, role } = req.user;
-
   // Calling the Function FetchData which fetch product,subproduct,channels based on product Id
-  fetchData(productId, (error, data) => {
+  fetchData(productId, year,(error, data) => {
     if (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal server errors' });
     }
 
     // Assuming you have retrieved the data for product, subproduct, and channel
-
     const productExists = data.product.length > 0;
     const subproductExists = data.subproducts.length > 0;
     const channelExists = data.channels.length > 0;
