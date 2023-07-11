@@ -262,13 +262,6 @@ router.put('/actual/:product_id/:month', authenticatedPolicy(), permissionPolicy
             })
         }
 
-        const treeStructure = await fetchData(product_id, year, () => { })
-
-        const productTreeStructure = treeStructure['product'];
-        const subproductTreeStructure = treeStructure['subproducts'];
-        const channelTreeStructure = treeStructure['channels']
-
-
         const { status: newStatus, product, subProduct, channels, year } = data
 
         if (!year) {
@@ -277,6 +270,13 @@ router.put('/actual/:product_id/:month', authenticatedPolicy(), permissionPolicy
                 status: 400,
             })
         }
+
+        const treeStructure = await fetchData(product_id, year, () => { })
+
+        const productTreeStructure = treeStructure['product'];
+        const subproductTreeStructure = treeStructure['subproducts'];
+        const channelTreeStructure = treeStructure['channels']
+
 
         // console.log('year',year)
         const productActual = await productModel.findOne({
