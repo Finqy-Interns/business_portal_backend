@@ -262,7 +262,7 @@ router.put('/actual/:product_id/:month', authenticatedPolicy(), permissionPolicy
             })
         }
 
-        const treeStructure = await fetchData(product_id, () => { })
+        const treeStructure = await fetchData(product_id, year, () => { })
 
         const productTreeStructure = treeStructure['product'];
         const subproductTreeStructure = treeStructure['subproducts'];
