@@ -19,6 +19,7 @@ const asyncHandler = require('express-async-handler');
 const { latestRecords } = require('../utils/getLatestBTAndActuals');
 const SubProductActuals = require('../../db/models/SubProductActuals');
 const ChannelActuals = require('../../db/models/ChannlelActuals');
+const Product = require('../../db/models/Product');
 /* 
 API is used to fetch all product,subproduct and channel for current financial Year
 
@@ -36,9 +37,22 @@ router.get('/:year', authenticatedPolicy(), permissionPolicy(['READ_HIERARCHY'])
     const { username } = req.user;
     const { year } = req.params
 
-    const userProductRecords = await UserProduct.findAll({
+    console.log('year',year)
+
+    // const userProductRecords = await UserProduct.findAll({
+    //   where: { user_id: username },
+    //   attributes: ['product_id']
+    // })
+
+    var userProductRecords = await UserProduct.findAll({
       where: { user_id: username },
-      attributes: ['product_id']
+      attributes: ['product_id'],
+      include:[
+        {
+          model:Product,
+          attributes:['name']
+        }
+      ]
     })
 
     if (userProductRecords.length > 0) {
@@ -48,16 +62,32 @@ router.get('/:year', authenticatedPolicy(), permissionPolicy(['READ_HIERARCHY'])
 
       var products = []
 
-      for (var i = 0; i < userProductIds.length; i++) {
-        const hierarchy = await fetchData(userProductIds[i], year, () => { })
-        // console.log('hierarchy',hierarchy)
-        products.push(hierarchy)
+      if(year!=="undefined"){
+        // This is the case which will return the products for the current year only which are assigned
+        for (var i = 0; i < userProductIds.length; i++) {
+          const hierarchy = await fetchData(userProductIds[i], year, () => { })
+          // console.log('hierarchy',hierarchy)
+          products.push(hierarchy)
+        }
+  
+        return res.status(200).json({
+          data: products,
+          status: 200,
+        })
       }
-
-      return res.status(200).json({
-        data: products,
-        status: 200,
-      })
+      else{
+        // This is the case where dashboard filtering is required on the frontend
+        var filterRecords=userProductRecords.map(up=>{
+          return {
+            product_id:up.dataValues?.product_id,
+            name:up.dataValues.Product.dataValues.name
+          }
+        })
+        return res.status(200).json({
+          data: filterRecords,
+          status: 200,
+        })
+      }
     }
     else {
       return res.status(400).json({
